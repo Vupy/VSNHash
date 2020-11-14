@@ -7,7 +7,7 @@ class VsnHash:
         pass
 
 
-    def make_hash(self, text:str, salt:str = 'vsninc', capo:str = None) -> str:
+    def make_hash(self, text: str, salt: str = 'vsninc', capo: str = None) -> str:
         out = ''
         s = 0
 
@@ -25,7 +25,7 @@ class VsnHash:
             s += (ord(i) + 2) >> 1
 
         for i in text:
-            n = (ord(i) << 2) + 2 + s
+            n = ((ord(i) ** 2) << 2) + 2 + s
             n = n >> x
             out += hex(n + keywork).replace('0x', '')
 
@@ -34,7 +34,7 @@ class VsnHash:
         return f'{sal}.{x}{out}'
 
 
-    def gen_salt(self, salt:str, capo:int = None) -> str:
+    def gen_salt(self, salt: str, capo: int = None) -> str:
         x = capo if capo else randint(1, 7)
         n = ''
         l = len(salt)
@@ -45,11 +45,11 @@ class VsnHash:
         return f'{x}{int(n, 16)}'
 
     
-    def verify(self, code:str, word:str, salt:str = 'vsninc') -> bool:
-        capos = code.split('.')[1][0] + code[0]
+    def verify(self, hash: str, word: str, salt: str = 'vsninc') -> bool:
+        capos = hash.split('.')[1][0] + hash[0]
         has = self.make_hash(word, salt, capos)
 
-        return code == has
+        return hash == has
 
 
 if __name__ == '__main__':
